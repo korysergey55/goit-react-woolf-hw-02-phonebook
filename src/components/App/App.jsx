@@ -16,6 +16,7 @@ class App extends Component {
     filter: '',
   }
   createNewContact = (data) => {
+    if (!this.isNotDublicate(data)) return
     const newContact = {
       ...data,
       id: nanoid()
@@ -24,12 +25,6 @@ class App extends Component {
   }
 
   isNotDublicate = (data) => {
-    if (!data.name || !data.number) {
-      toast.error('The field cannot be empty!', {
-        theme: 'colored',
-      })
-      return false;
-    }
     if (this.state.contacts.some((contact) => contact.name === data.name)) {
       toast.error(`This Name - ${data.name} already exist!`, {
         theme: 'colored',
@@ -57,13 +52,16 @@ class App extends Component {
     }))
   }
 
+  getFilteredContacts = () => {
+    return this.state.contacts.filter((item) =>
+      item.name
+        .toLocaleLowerCase()
+        .trim()
+        .includes(this.state.filter.toLocaleLowerCase().trim()))
+  }
+
   render() {
-    const filteredComtacts =
-      this.state.contacts.filter((item) =>
-        item.name
-          .toLocaleLowerCase()
-          .trim()
-          .includes(this.state.filter.toLocaleLowerCase().trim()))
+    const filteredComtacts = this.getFilteredContacts()
 
     return (
       <div className={styles.container} >
@@ -71,7 +69,7 @@ class App extends Component {
         <h1 className={styles.title}>Phonebook</h1>
         <ContactForm
           createNewContact={this.createNewContact}
-          isNotDublicate={this.isNotDublicate} />
+        />
 
         <h1 className={styles.title}>Contacts</h1>
         <Filter
@@ -85,10 +83,10 @@ class App extends Component {
 
         <ToastContainer
           position="top-right"
-          autoClose={6000} />
-      </div >
+          autoClose={6000}
+        />
+      </div>
     );
-
   }
 };
 export { App }

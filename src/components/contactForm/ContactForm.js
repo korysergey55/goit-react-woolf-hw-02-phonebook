@@ -14,10 +14,8 @@ class ContactForm extends Component {
 
   handleSubmit = (evt) => {
     evt.preventDefault()
-    if (this.props.isNotDublicate(this.state)) {
-      this.props.createNewContact(this.state)
-      this.formReset()
-    }
+    this.props.createNewContact(this.state)
+    this.formReset()
   }
 
   formReset = () => {
